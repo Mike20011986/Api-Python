@@ -85,6 +85,3 @@ class TestUserAgent(BaseCase):
             device,
             "!!!Device in this response not equal to exclude device!!!"
         )
-
-        if platform != platform_in_response or browser != browser_in_response or device != device_in_response:
-            print(condition)

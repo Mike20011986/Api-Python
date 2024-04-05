@@ -5,7 +5,7 @@ from datetime import datetime
 
 
 class TestUserRegister(BaseCase):
-    def setup(self):
+    def setup_method(self):
         basepart = "learnqa"
         domain = "example.com"
         randompart = datetime.now().strftime("%m%d%y%H%M%S")

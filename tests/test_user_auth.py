@@ -9,7 +9,7 @@ class TestUserAuth(BaseCase):
         ("no_token")
     ]
 
-    def setup(self):
+    def setup_method(self):
         data = dict(email='vinkotov@example.com', password='1234')
 
         response1 = requests.post("https://playground.learnqa.ru/api/user/login", data=data)

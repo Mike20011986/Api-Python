@@ -2,7 +2,6 @@ import pytest
 import requests
 from lib.base_case import BaseCase
 from lib.assertions import Assertions
-from datetime import datetime
 
 
 class TestUserRegister(BaseCase):
@@ -39,20 +38,9 @@ class TestUserRegister(BaseCase):
         }
     ]
 
-    def setup_method(self):
-        basepart = "learnqa"
-        domain = "example.com"
-        randompart = datetime.now().strftime("%m%d%y%H%M%S")
-        self.email = f"{basepart}{randompart}@{domain}"
 
     def test_create_user_successfully(self):
-        data = {
-            'password': '123',
-            'username': 'learnqa',
-            'firstName': 'learnqa',
-            'lastName': 'learnqa',
-            'email': self.email
-        }
+        data = self.prepare_registration_data()
 
         response = requests.post("https://playground.learnqa.ru/api/user/", data=data)
 
@@ -61,13 +49,7 @@ class TestUserRegister(BaseCase):
 
     def test_create_user_with_existing_email(self):
         email = 'vinkotov@example.com'
-        data = {
-            'password': '123',
-            'username': 'learnqa',
-            'firstName': 'learnqa',
-            'lastName': 'learnqa',
-            'email': email
-        }
+        data = self.prepare_registration_data(email)
 
         response = requests.post("https://playground.learnqa.ru/api/user/", data=data)
 
@@ -77,13 +59,7 @@ class TestUserRegister(BaseCase):
 
     def test_create_user_with_incorrect_email(self):
         email = 'vinkotov_example.com'
-        data = {
-            'password': '123',
-            'username': 'learnqa',
-            'firstName': 'learnqa',
-            'lastName': 'learnqa',
-            'email': email
-        }
+        data = self.prepare_registration_data(email)
 
         response1 = requests.post("https://playground.learnqa.ru/api/user/", data=data)
 
@@ -101,15 +77,9 @@ class TestUserRegister(BaseCase):
         assert "The following required params are missed:" in response.content.decode('utf-8'), \
             f"Unexpected response content {response.content}"
 
-
     def test_create_user_with_very_short_name(self):
-        data = {
-            'password': '123',
-            'username': 'learnqa',
-            'firstName': 'l',
-            'lastName': 'learnqa',
-            'email': self.email
-        }
+        data = self.prepare_registration_data()
+        data["firstName"] = 'l'
 
         response2 = requests.post("https://playground.learnqa.ru/api/user/", data=data)
 
@@ -118,13 +88,8 @@ class TestUserRegister(BaseCase):
             f"Unexpected response content {response2.content}"
 
     def test_create_user_with_very_long_name(self):
-        data = {
-            'password': '123',
-            'username': 'learnqa',
-            'firstName': 'jbuyguynoij9hygytvhgbkmkJWKWEMFKLEWMFIWJFEWRHIUnjkhhbjkmlkojoinmmoiiubjhkmijiubhbmnlkjubhbjhnknjoiniubnjkniuhhbhjbjkhuiweffffffffffffffffeeefffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffmlkmjnhbvgjbilhyugyubhjbuygyugvvgytygyfyttfvtyvgvgfcfgxdzsazcvhgvbjnfвакупкуппупку',
-            'lastName': 'learnqa',
-            'email': self.email
-        }
+        data = self.prepare_registration_data()
+        data["firstName"] = 'jbuyguynoij9hygytvhgbkmkJWKWEMFKLEWMFIWJFEWRHIUnjkhhbjkmlkojoinmmoiiubjhkmijiubhbmnlkjubhbjhnknjoiniubnjkniuhhbhjbjkhuiweffffffffffffffffeeefffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffmlkmjnhbvgjbilhyugyubhjbuygyugvvgytygyfyttfvtyvgvgfcfgxdzsazcvhgvbjnfвакупкуппупку'
 
         response2 = requests.post("https://playground.learnqa.ru/api/user/", data=data)
 

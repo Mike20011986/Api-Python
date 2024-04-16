@@ -46,3 +46,21 @@ class Assertions:
 
         for name in names:
             assert name not in response_as_dict, f"Response JSON shouldn't have key {name}. But it's present"
+
+    @staticmethod
+    def assert_json_values_by_names(response: Response, names: dict):
+        try:
+            response_as_dict = response.json()
+        except json.JSONDecodeError:
+            assert False, f"Response is not JSON format. Response text is '{response.text}'"
+
+        for name in names.keys():
+            if name == "password":
+                continue
+            assert name in response_as_dict, f"Response JSON doesn't have key {name}"
+            Assertions.assert_json_value_by_name(
+                response,
+                name,
+                names[name],
+                f"Unexpected value in '{name}'"
+            )

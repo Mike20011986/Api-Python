@@ -47,6 +47,7 @@ class Assertions:
         for name in names:
             assert name not in response_as_dict, f"Response JSON shouldn't have key {name}. But it's present"
 
+    # здесь нужно добавить на вход методу список параметров, которые мы не ждем в ответе и пропускать их
     @staticmethod
     def assert_json_values_by_names(response: Response, names: dict):
         try:

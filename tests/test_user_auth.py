@@ -4,7 +4,9 @@ from lib.base_case import BaseCase
 from lib.assertions import Assertions
 import allure
 
+
 @allure.epic('Authorization cases')
+@allure.severity(allure.severity_level.CRITICAL)
 class TestUserAuth(BaseCase):
     exclude_params = [
         ("no_cookie"),

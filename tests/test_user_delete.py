@@ -19,7 +19,7 @@ class TestUserDelete(BaseCase):
         self.password = self.register_data["password"]
         self.user_id = self.get_json_value(response1, "id")
 
-        #LOGIN
+        # LOGIN
         response2 = MyRequests.post("/user/login",
                                     data={
                                         "email": self.email,
@@ -31,6 +31,7 @@ class TestUserDelete(BaseCase):
         self.token = self.get_header(response2, "x-csrf-token")
 
     @allure.description('This test make chance to delete user with id=2')
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_user_with_id_2(self):
         data_id_2 = {
             "username": "Vitaliy",
@@ -69,6 +70,7 @@ class TestUserDelete(BaseCase):
         Assertions.assert_json_values_by_names(response3, data_id_2)
 
     @allure.description('Positive test user delete')
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_user_delete_positive(self):
         # DELETE
         response3 = MyRequests.delete(
@@ -90,6 +92,7 @@ class TestUserDelete(BaseCase):
         assert response4.text == "User not found", "Unexpected text in response"
 
     @allure.description('This test make chance to delete user with other token')
+    @allure.severity(allure.severity_level.MINOR)
     def test_user_delete_negative(self):
         # LOGIN WITH OTHER DATA
         data = dict(email='vinkotov@example.com', password='1234')

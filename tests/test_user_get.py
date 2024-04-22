@@ -1,8 +1,12 @@
+import allure
+
 from lib.my_requests import MyRequests
 from lib.base_case import BaseCase
 from lib.assertions import Assertions
 
 
+@allure.epic('Test user get')
+@allure.severity(allure.severity_level.TRIVIAL)
 class TestUserGet(BaseCase):
     def setup_method(self):
         self.unexpected_fields = ["email", "firstName", "lastName"]
@@ -18,12 +22,16 @@ class TestUserGet(BaseCase):
         self.token = self.get_header(response1, "x-csrf-token")
         self.user_id_from_auth_method = self.get_json_value(response1, "user_id")
 
+    @allure.severity(allure.severity_level.TRIVIAL)
+    @allure.description('This test get user data without auth')
     def test_get_user_details_not_auth(self):
         response = MyRequests.get("/user/2")
 
         Assertions.assert_json_has_key(response, "username")
         Assertions.assert_json_has_not_keys(response, self.unexpected_fields)
 
+    @allure.severity(allure.severity_level.TRIVIAL)
+    @allure.description('This test get user data')
     def test_get_user_details_auth_at_same_user(self):
         response2 = MyRequests.get(
             f"/user/{self.user_id_from_auth_method}",
@@ -34,6 +42,8 @@ class TestUserGet(BaseCase):
         expected_fields = ["username", "email", "firstName", "lastName"]
         Assertions.assert_json_has_keys(response2, expected_fields)
 
+    @allure.severity(allure.severity_level.MINOR)
+    @allure.description('This test get user data with auth data of other user')
     def test_get_user_details_auth_at_other_user(self):
         response3 = MyRequests.get(
             f"/user/1",

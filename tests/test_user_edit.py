@@ -1,8 +1,12 @@
+import allure
+
 from lib.my_requests import MyRequests
 from lib.base_case import BaseCase
 from lib.assertions import Assertions
 
 
+@allure.epic('Test user edit with or without auth')
+@allure.severity(allure.severity_level.TRIVIAL)
 class TestUserEdit(BaseCase):
     def setup_method(self):
         # REGISTER
@@ -28,6 +32,7 @@ class TestUserEdit(BaseCase):
         self.auth_sid = self.get_cookie(response2, "auth_sid")
         self.token = self.get_header(response2, "x-csrf-token")
 
+    @allure.description('This test edit name for just created user with auth ')
     def test_edit_just_created_user(self):
         # EDIT NAME
         new_name = "Changed Name"
@@ -55,10 +60,11 @@ class TestUserEdit(BaseCase):
             "Wrong name of the user after edit"
         )
 
+    @allure.description("This test edit name without auth")
+    @allure.severity(allure.severity_level.MINOR)
     def test_edit_without_auth(self):
         # EDIT NAME
         new_name = "Changed Name"
-
         response3 = MyRequests.put(
             f"/user/{self.user_id}",
             data={"firstName": new_name}
@@ -81,6 +87,8 @@ class TestUserEdit(BaseCase):
             "Wrong name of the user after edit"
         )
 
+    @allure.description('This test edit name with auth data of other user')
+    @allure.severity(allure.severity_level.MINOR)
     def test_edit_with_auth_at_other_user(self):
         # REGISTER OTHER USER
         register_data2 = self.prepare_registration_data()
@@ -105,7 +113,6 @@ class TestUserEdit(BaseCase):
 
         # EDIT NAME
         new_name = "Changed Name"
-
         response3 = MyRequests.put(
             f"/user/{self.user_id}",
             headers={"x-csrf-token": token},
@@ -114,7 +121,8 @@ class TestUserEdit(BaseCase):
         )
 
         Assertions.assert_code_status(response3, 400)
-        Assertions.assert_json_value_by_name(response3, "error", "This user can only edit their own data.", "Unexpected error text")
+        Assertions.assert_json_value_by_name(response3, "error", "This user can only edit their own data.",
+                                             "Unexpected error text")
 
         # GET
         response4 = MyRequests.get(
@@ -129,7 +137,10 @@ class TestUserEdit(BaseCase):
             self.first_name,
             "Wrong name of the user after edit"
         )
+        print(response4.text)
 
+    @allure.description('This test edit invalid email')
+    @allure.severity(allure.severity_level.MINOR)
     def test_edit_invalid_email(self):
         # LOGIN
         login_data = {
@@ -169,6 +180,7 @@ class TestUserEdit(BaseCase):
             "Wrong name of the user after edit"
         )
 
+    @allure.description('This test edit very short firstname')
     def test_edit_very_short_firstname(self):
         # LOGIN
         login_data = {

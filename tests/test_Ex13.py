@@ -1,9 +1,11 @@
+import allure
 import pytest
 import requests
 from lib.assertions import Assertions
 from lib.base_case import BaseCase
 
 
+@allure.epic('Test Header: User Agent')
 class TestUserAgent(BaseCase):
     param_values = [
         (
@@ -47,7 +49,7 @@ class TestUserAgent(BaseCase):
         )
     ]
 
-
+    @allure.title('This case test header "User=Agent" with condition "{condition}"')
     @pytest.mark.parametrize("condition, value", param_values)
     def test_user_agent(self, condition, value):
         platform = value["platform"]
